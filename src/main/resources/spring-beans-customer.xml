@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+
+		<!--Properties file 정보 설정 -->
+	<context:property-placeholder location="classpath:value.properties" />
+	
+		<!-- DataSource 구현체인 HikariDataSource 를 SpringBean으로 등록 -->
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource" 
+		p:driverClassName="${db.driverClass}"
+		p:jdbcUrl="${db.url}"
+		p:username="${db.username}"
+		p:password="${db.password}"
+	/>
+	
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+			<property name="dataSource" ref="dataSource" /> <!-- setDataSource()메소드임 -->
+																			<!-- ref는 위에Hikari 구현객체 -->
+			<property name="configLocation" value="classpath:mybatis/SqlMapConfig.xml" />
+																			<!-- 이건파일이라 value쓴다 --> <!-- SqlMapConfig이때 UserVO가연결됨 -->
+			<property name="mapperLocations">
+					<list>
+						<value>classpath:mybatis/*Mapper.xml</value> <!-- 로드하기 -->
+					</list>
+			</property>
+	</bean>
+
+</beans>
